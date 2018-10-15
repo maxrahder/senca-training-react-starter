@@ -1,3 +1,12 @@
 {
-  "presets": ["@babel/env", "@babel/react"]
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "modules": false
+      }
+    ],
+    "@babel/react"
+  ],
+  "plugins": ["@sencha/ext-react-babel-plugin"]
 }
