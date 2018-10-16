@@ -1,11 +1,11 @@
 const webpack = require("webpack");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const ExtWebpackPlugin = require("@sencha/ext-react-webpack-plugin");
 const portfinder = require("portfinder");
 const sourcePath = path.join(__dirname, "./src");
 
 module.exports = function(env) {
-  env = env || {};
   var buildprofile =
     env.profile || process.env.npm_package_extbuild_defaultprofile;
   var buildenvironment =
@@ -23,14 +23,14 @@ module.exports = function(env) {
       new HtmlWebpackPlugin({
         template: "index.html",
         hash: true
+      }),
+      new ExtWebpackPlugin({
+        framework: "react",
+        port: port,
+        profile: buildprofile,
+        environment: buildenvironment,
+        verbose: buildverbose
       })
-      // new ExtWebpackPlugin({
-      //   framework: "react",
-      //   port: port,
-      //   profile: buildprofile,
-      //   environment: buildenvironment,
-      //   verbose: buildverbose
-      // })
     ];
     if (!isProd) {
       plugins.push(new webpack.HotModuleReplacementPlugin());
@@ -40,16 +40,13 @@ module.exports = function(env) {
       cache: true,
       devtool: isProd ? "source-map" : "cheap-module-source-map",
       context: sourcePath,
-      entry: path.join(__dirname, "src", "index.js"),
+      entry: {
+        app: ["./index.js"]
+      },
       output: {
-        path: path.join(__dirname, "build"),
-        filename: "index.bundle.js"
+        path: path.resolve(__dirname, "build"),
+        filename: "[name].js"
       },
-      mode: process.env.NODE_ENV || "development",
-      resolve: {
-        modules: [path.resolve(__dirname, "src"), "node_modules"]
-      },
-
       module: {
         rules: [
           {
@@ -71,9 +68,16 @@ module.exports = function(env) {
           }
         ]
       },
+      resolve: {
+        // The following is only needed when running this boilerplate within the ext-react repo.  You can remove this from your own projects.
+        alias: {
+          "react-dom": path.resolve("./node_modules/react-dom"),
+          react: path.resolve("./node_modules/react")
+        }
+      },
       plugins,
       devServer: {
-        contentBase: path.join(__dirname, "src", "./build"),
+        contentBase: "./build",
         historyApiFallback: true,
         hot: false,
         host: "0.0.0.0",
