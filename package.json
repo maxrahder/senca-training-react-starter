@@ -1,7 +1,7 @@
 {
-  "name": "earthquakes",
+  "name": "Yelp",
   "version": "0.0.1",
-  "description": "earthquakes description for ExtReact app earthquakes",
+  "description": "Yelp Extplorer",
   "keywords": [
     "ExtReact"
   ],
